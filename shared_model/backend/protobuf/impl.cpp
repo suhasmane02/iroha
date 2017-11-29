@@ -18,4 +18,5 @@
 #include "backend/protobuf/commands/proto_add_asset_quantity.hpp"
 #include "backend/protobuf/commands/proto_command.hpp"
 
-#include "backend/protobuf/common_objects/proto_account_asset.hpp"
+#include "backend/protobuf/query_responses/proto_account_asset_response.hpp"
+#include "backend/protobuf/query_responses/proto_query_response.hpp"
