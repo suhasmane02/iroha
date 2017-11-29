@@ -15,5 +15,7 @@
  * limitations under the License.
  */
 
-#include "backend/protobuf/commands/proto_command.hpp"
 #include "backend/protobuf/commands/proto_add_asset_quantity.hpp"
+#include "backend/protobuf/commands/proto_command.hpp"
+
+#include "backend/protobuf/common_objects/proto_account_asset.hpp"

@@ -20,7 +20,7 @@
 
 #include "interfaces/commands/add_asset_quantity.hpp"
 
-#include "backend/protobuf/common_objects/amount.hpp"
+#include "backend/protobuf/common_objects/proto_amount.hpp"
 #include "commands.pb.h"
 #include "utils/lazy_initializer.hpp"
 #include "utils/reference_holder.hpp"
