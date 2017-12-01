@@ -18,9 +18,12 @@
 #ifndef IROHA_PROTO_TRANSACTION_BUILDER_HPP
 #define IROHA_PROTO_TRANSACTION_BUILDER_HPP
 
-#include "amount/amount.hpp"
 #include "backend/protobuf/transaction.hpp"
+
 #include "block.pb.h"
+#include "commands.pb.h"
+
+#include "amount/amount.hpp"
 #include "builders/protobuf/helpers.hpp"
 #include "interfaces/common_objects/types.hpp"
 
@@ -70,87 +73,86 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> &addAddPeer(
+      NextBuilder<Command> addAddPeer(
           const interface::types::AddressType &address,
           const interface::types::PubkeyType &peer_key) {
-        auto command = transaction_.mutable_payload()
-                           ->add_commands()
-                           ->mutable_add_add_peer();
+        auto command =
+            transaction_.mutable_payload()->add_commands()->mutable_add_peer();
         command->set_address(address);
-        command->set_peer_key(peer_key);
+        command->set_peer_key(peer_key.blob());
         return *this;
       }
 
-      NextBuilder<Command> &addAddSignatory(
+      NextBuilder<Command> addAddSignatory(
           const interface::types::AddressType &account_id,
           const interface::types::PubkeyType &public_key) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_add_signatory();
+                           ->mutable_add_signatory();
         command->set_account_id(account_id);
-        command->set_public_key(public_key);
+        command->set_public_key(public_key.blob());
         return *this;
       }
 
-      NextBuilder<Command> &addRemoveSignatory(
+      NextBuilder<Command> addRemoveSignatory(
           const interface::types::AddressType &account_id,
           const interface::types::PubkeyType &public_key) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_remove_signatory();
+                           ->mutable_remove_sign();
         command->set_account_id(account_id);
-        command->set_public_key(public_key);
+        command->set_public_key(public_key.blob());
         return *this;
       }
 
-      NextBuilder<Command> &addCreateAsset(
+      NextBuilder<Command> addCreateAsset(
           const std::string &asset_name,
           const interface::types::AddressType &domain_id,
           uint32_t precision) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_create_asset();
+                           ->mutable_create_asset();
         command->set_asset_name(asset_name);
         command->set_domain_id(domain_id);
         command->set_precision(precision);
         return *this;
       }
 
-      NextBuilder<Command> &addCreateAccount(
+      NextBuilder<Command> addCreateAccount(
           const std::string &account_name,
           const interface::types::AddressType &domain_id,
           const interface::types::PubkeyType &main_pubkey) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_create_account();
+                           ->mutable_create_account();
         command->set_account_name(account_name);
         command->set_domain_id(domain_id);
-        command->set_main_pubkey(main_pubkey);
+        command->set_main_pubkey(main_pubkey.blob());
         return *this;
       }
 
-      NextBuilder<Command> &addCreateDomain(
+      NextBuilder<Command> addCreateDomain(
           const interface::types::AddressType &domain_id,
           const interface::types::RoleIdType &default_role) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_create_account();
+                           ->mutable_create_domain();
         command->set_domain_id(domain_id);
         command->set_default_role(default_role);
         return *this;
       }
 
-      NextBuilder<Command> &addSetAccountQuorum(
+      NextBuilder<Command> addSetAccountQuorum(
           const interface::types::AddressType &account_id, uint32_t quorum) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_set_quorum();
+                           ->mutable_set_quorum();
         command->set_account_id(account_id);
         command->set_quorum(quorum);
         return *this;
       }
 
-      NextBuilder<Command> &addTransferAsset(
+      NextBuilder<Command> addTransferAsset(
           const interface::types::AccountIdType &src_account_id,
           const interface::types::AccountIdType &dest_account_id,
           const interface::types::AssetIdType &asset_id,
@@ -158,7 +160,7 @@ namespace shared_model {
           const std::string &amount) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
-                           ->mutable_add_create_account();
+                           ->mutable_transfer_asset();
         command->set_src_account_id(src_account_id);
         command->set_dest_account_id(dest_account_id);
         command->set_asset_id(asset_id);
