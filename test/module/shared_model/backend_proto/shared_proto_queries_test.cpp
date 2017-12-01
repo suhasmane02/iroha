@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-#include "builders/protobuf/query.hpp"
+#include "builders/protobuf/queries.hpp"
 
 #include <gtest/gtest.h>
 
@@ -30,19 +30,19 @@ TEST(ProtoQueryBuilder, Builder) {
 
   iroha::protocol::Query proto_tx;
   auto &payload = *proto_tx.mutable_payload();
-  auto &query = *payload.add_commands()->mutable_get_account_assets();
+  auto &query = *payload.mutable_get_account_assets();
   payload.set_created_time(created_time);
   payload.set_creator_account_id(account_id);
   query.set_account_id(account_id);
   query.set_asset_id(asset_id);
 
-  auto tx = shared_model::proto::QueryBuilder()
-                .createdTime(created_time)
-                .creatorAccountId(account_id)
-                .setGetAccountAssets(account_id, asset_id)
-                .queryCounter(query_counter)
-                .build();
   // Uncomment on completing proto::Query
+  /*auto tx = */ shared_model::proto::QueryBuilder()
+      .createdTime(created_time)
+      .creatorAccountId(account_id)
+      .setGetAccountAssets(account_id, asset_id)
+      .queryCounter(query_counter)
+      .build();
   // auto &proto = tx.getTransport();
 
   ASSERT_TRUE(true);
