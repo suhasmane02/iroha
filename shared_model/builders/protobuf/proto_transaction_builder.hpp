@@ -25,13 +25,18 @@
 
 namespace shared_model {
   namespace proto {
+    enum RequiredFields {
+      Command,
+      CreatorAccountId,
+      TxCounter,
+      TOTAL = (1 << (TxCounter + 1)) - 1
+    };
+
     template <int S = 0>
     class TemplateTransactionBuilder {
      private:
       template <int>
       friend class TemplateTransactionBuilder;
-
-      enum RequiredFields { Command, CreatorAccountId, TxCounter, TOTAL };
 
       template <int s>
       using NextBuilder = TemplateTransactionBuilder<S | (1 << s)>;
@@ -45,18 +50,19 @@ namespace shared_model {
      public:
       TemplateTransactionBuilder() = default;
 
-      NextBuilder<CreatorAccountId> creatorAccountId(
+      TemplateTransactionBuilder<TOTAL> creatorAccountId(
           const interface::types::AccountIdType &account_id) {
         transaction_.mutable_payload()->set_creator_account_id(account_id);
         return *this;
       }
 
-      NextBuilder<TxCounter> txCounter(Transaction::TxCounterType tx_counter) {
+      TemplateTransactionBuilder<TOTAL> txCounter(
+          Transaction::TxCounterType tx_counter) {
         transaction_.mutable_payload()->set_tx_counter(tx_counter);
         return *this;
       }
 
-      NextBuilder<Command> addAssetQuantity(
+      TemplateTransactionBuilder<TOTAL> addAssetQuantity(
           const interface::types::AccountIdType &account_id,
           const interface::types::AssetIdType &asset_id,
           const std::string &amount) {
@@ -79,7 +85,7 @@ namespace shared_model {
       }
 
       Transaction build() {
-        static_assert(S == (1 << TOTAL) - 1, "Required fields are not set");
+        static_assert(S == TOTAL, "Required fields are not set");
 
         return Transaction(std::move(transaction_));
       }
