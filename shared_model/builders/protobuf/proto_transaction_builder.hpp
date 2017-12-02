@@ -25,44 +25,25 @@
 
 namespace shared_model {
   namespace proto {
-    enum RequiredFields {
-      Command,
-      CreatorAccountId,
-      TxCounter,
-      TOTAL = 7
-    };
-
-    template <int S = 0>
-    class TemplateTransactionBuilder {
+    class TransactionBuilder {
      private:
-      template <int>
-      friend class TemplateTransactionBuilder;
-
-      template <int s>
-      using NextBuilder = TemplateTransactionBuilder<S | (1 << s)>;
-
       iroha::protocol::Transaction transaction_;
 
-      template <int Sp>
-      TemplateTransactionBuilder(const TemplateTransactionBuilder<Sp> &o)
-          : transaction_(o.transaction_) {}
-
      public:
-      TemplateTransactionBuilder() = default;
+      TransactionBuilder() = default;
 
-      TemplateTransactionBuilder<7> creatorAccountId(
+      TransactionBuilder creatorAccountId(
           const interface::types::AccountIdType &account_id) {
         transaction_.mutable_payload()->set_creator_account_id(account_id);
         return *this;
       }
 
-      TemplateTransactionBuilder<7> txCounter(
-          Transaction::TxCounterType tx_counter) {
+      TransactionBuilder txCounter(Transaction::TxCounterType tx_counter) {
         transaction_.mutable_payload()->set_tx_counter(tx_counter);
         return *this;
       }
 
-      TemplateTransactionBuilder<7> addAssetQuantity(
+      TransactionBuilder addAssetQuantity(
           const interface::types::AccountIdType &account_id,
           const interface::types::AssetIdType &asset_id,
           const std::string &amount) {
@@ -85,13 +66,9 @@ namespace shared_model {
       }
 
       Transaction build() {
-        static_assert(S == TOTAL, "Required fields are not set");
-
         return Transaction(std::move(transaction_));
       }
     };
-
-    using TransactionBuilder = TemplateTransactionBuilder<>;
   }  // namespace proto
 }  // namespace shared_model
 
