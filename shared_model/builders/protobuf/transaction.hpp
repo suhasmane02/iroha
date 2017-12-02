@@ -35,18 +35,24 @@ namespace shared_model {
       template <int>
       friend class TemplateTransactionBuilder;
 
-      enum RequiredFields { Command, CreatorAccountId, TxCounter, TOTAL };
+      enum RequiredFields {
+        Command,
+        CreatorAccountId,
+        TxCounter,
+        CreatedTime,
+        TOTAL
+      };
 
       template <int s>
       using NextBuilder = TemplateTransactionBuilder<S | (1 << s)>;
 
       iroha::protocol::Transaction transaction_;
 
+     public:
       template <int Sp>
       TemplateTransactionBuilder(const TemplateTransactionBuilder<Sp> &o)
           : transaction_(o.transaction_) {}
 
-     public:
       TemplateTransactionBuilder() = default;
 
       NextBuilder<CreatorAccountId> creatorAccountId(
@@ -60,7 +66,12 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addAssetQuantity(
+      NextBuilder<CreatedTime> createdTime(uint64_t created_time) {
+        transaction_.mutable_payload()->set_created_time(created_time);
+        return *this;
+      }
+
+      NextBuilder<Command> assetQuantity(
           const interface::types::AccountIdType &account_id,
           const interface::types::AssetIdType &asset_id,
           const std::string &amount) {
@@ -73,7 +84,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addAddPeer(
+      NextBuilder<Command> addPeer(
           const interface::types::AddressType &address,
           const interface::types::PubkeyType &peer_key) {
         auto command =
@@ -83,7 +94,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addAddSignatory(
+      NextBuilder<Command> addSignatory(
           const interface::types::AddressType &account_id,
           const interface::types::PubkeyType &public_key) {
         auto command = transaction_.mutable_payload()
@@ -94,7 +105,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addRemoveSignatory(
+      NextBuilder<Command> removeSignatory(
           const interface::types::AddressType &account_id,
           const interface::types::PubkeyType &public_key) {
         auto command = transaction_.mutable_payload()
@@ -105,7 +116,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addCreateAsset(
+      NextBuilder<Command> createAsset(
           const std::string &asset_name,
           const interface::types::AddressType &domain_id,
           uint32_t precision) {
@@ -118,7 +129,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addCreateAccount(
+      NextBuilder<Command> createAccount(
           const std::string &account_name,
           const interface::types::AddressType &domain_id,
           const interface::types::PubkeyType &main_pubkey) {
@@ -131,7 +142,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addCreateDomain(
+      NextBuilder<Command> createDomain(
           const interface::types::AddressType &domain_id,
           const interface::types::RoleIdType &default_role) {
         auto command = transaction_.mutable_payload()
@@ -142,7 +153,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addSetAccountQuorum(
+      NextBuilder<Command> setAccountQuorum(
           const interface::types::AddressType &account_id, uint32_t quorum) {
         auto command = transaction_.mutable_payload()
                            ->add_commands()
@@ -152,7 +163,7 @@ namespace shared_model {
         return *this;
       }
 
-      NextBuilder<Command> addTransferAsset(
+      NextBuilder<Command> transferAsset(
           const interface::types::AccountIdType &src_account_id,
           const interface::types::AccountIdType &dest_account_id,
           const interface::types::AssetIdType &asset_id,

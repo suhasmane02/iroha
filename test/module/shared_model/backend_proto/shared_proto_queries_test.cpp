@@ -33,18 +33,18 @@ TEST(ProtoQueryBuilder, Builder) {
   auto &query = *payload.mutable_get_account_assets();
   payload.set_created_time(created_time);
   payload.set_creator_account_id(account_id);
+  payload.set_query_counter(query_counter);
   query.set_account_id(account_id);
   query.set_asset_id(asset_id);
 
-  // Uncomment on completing proto::Query
-  /*auto tx = */ shared_model::proto::QueryBuilder()
+  auto tx = shared_model::proto::QueryBuilder()
       .createdTime(created_time)
       .creatorAccountId(account_id)
-      .setGetAccountAssets(account_id, asset_id)
+      .getAccountAssets(account_id, asset_id)
       .queryCounter(query_counter)
       .build();
-  // auto &proto = tx.getTransport();
+  // TODO IR-648 @l4l: Uncomment on completing proto::Query
+  auto &proto = tx;//.getTransport();
 
-  ASSERT_TRUE(true);
-  // ASSERT_EQ(proto_tx.SerializeAsString(), proto.SerializeAsString());
+  ASSERT_EQ(proto_tx.SerializeAsString(), proto.SerializeAsString());
 }
