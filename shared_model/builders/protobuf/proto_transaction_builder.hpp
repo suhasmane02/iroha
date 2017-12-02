@@ -29,7 +29,7 @@ namespace shared_model {
       Command,
       CreatorAccountId,
       TxCounter,
-      TOTAL = (1 << (TxCounter + 1)) - 1
+      TOTAL = 7
     };
 
     template <int S = 0>
@@ -50,19 +50,19 @@ namespace shared_model {
      public:
       TemplateTransactionBuilder() = default;
 
-      TemplateTransactionBuilder<TOTAL> creatorAccountId(
+      TemplateTransactionBuilder<7> creatorAccountId(
           const interface::types::AccountIdType &account_id) {
         transaction_.mutable_payload()->set_creator_account_id(account_id);
         return *this;
       }
 
-      TemplateTransactionBuilder<TOTAL> txCounter(
+      TemplateTransactionBuilder<7> txCounter(
           Transaction::TxCounterType tx_counter) {
         transaction_.mutable_payload()->set_tx_counter(tx_counter);
         return *this;
       }
 
-      TemplateTransactionBuilder<TOTAL> addAssetQuantity(
+      TemplateTransactionBuilder<7> addAssetQuantity(
           const interface::types::AccountIdType &account_id,
           const interface::types::AssetIdType &asset_id,
           const std::string &amount) {
