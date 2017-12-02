@@ -38,7 +38,7 @@ namespace shared_model {
         return *this;
       }
 
-      TransactionBuilder txCounter(Transaction::TxCounterType tx_counter) {
+      TransactionBuilder txCounter(uint64_t tx_counter) {
         transaction_.mutable_payload()->set_tx_counter(tx_counter);
         return *this;
       }
